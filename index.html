@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nodica｜農業ICTサポート</title>
+
+    <!-- フォント（LINE Seed JP） -->
+    <style>
+        @font-face {
+            font-family: 'LINE Seed JP';
+            src: url('assets/fonts/LINESeedJP_OTF_Th.woff2') format('woff2');
+            font-weight: 100;
+        }
+        @font-face {
+            font-family: 'LINE Seed JP';
+            src: url('assets/fonts/LINESeedJP_OTF_Rg.woff2') format('woff2');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'LINE Seed JP';
+            src: url('assets/fonts/LINESeedJP_OTF_Bd.woff2') format('woff2');
+            font-weight: 700;
+        }
+        @font-face {
+            font-family: 'LINE Seed JP';
+            src: url('assets/fonts/LINESeedJP_OTF_Eb.woff2') format('woff2');
+            font-weight: 900;
+        }
+
+        :root {
+            --color-main: #3A6EA5;
+            --color-accent: #58A4B0;
+            --color-sub1: #F5F7FA;
+            --color-sub2: #2E4057;
+            --color-highlight: #EBA434;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'LINE Seed JP', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--color-sub1);
+            color: var(--color-sub2);
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4 {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .container {
+            width: min(1100px, 100%);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 72px 0;
+        }
+
+        /* スマホで余白が広すぎないよう調整 */
+        @media (max-width: 600px) {
+            section {
+                padding: 56px 0;
+            }
+        }
+
+        /* フェードイン */
+        .fadein {
+            opacity: 0;
+            transform: translateY(18px);
+            animation: fadeUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* CTAボタン */
+        .btn {
+            display: inline-block;
+            padding: 13px 28px;
+            border-radius: 999px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: #fff;
+            background: var(--color-highlight);
+            text-align: center;
+            transition: 0.25s;
+            border: none;
+        }
+
+        .btn-main {
+            background: var(--color-highlight);
+        }
+
+        .btn-sub-main {
+            background: var(--color-main);
+        }
+
+        .btn-sub-accent {
+            background: var(--color-accent);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1.5px);
+        }
+
+        @media (max-width: 600px) {
+            .btn {
+                width: 100%;
+                padding: 14px 0;
+            }
+        }
+
+        /* カードレイアウト共通 */
+        .card-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px 26px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            min-height: 230px; /* 高さ揃え */
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 14px;
+            color: var(--color-main);
+        }
+
+        /* 料金カード */
+        .price-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        @media (min-width: 900px) {
+            .price-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .price-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+            text-align: left;
+            min-height: 260px;
+        }
+
+        .price-title {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .price-value {
+            font-size: 1.2rem;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: var(--color-sub2);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(58, 110, 165, 0.08);
+            color: var(--color-main);
+            margin-left: 6px;
+        }
+
+        /* FAQ */
+        details {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+        }
+
+        details summary {
+            list-style: none;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--color-main);
+        }
+
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+
+        details p {
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+
+        /* 見出し */
+        .sec-title {
+            font-size: 2rem;
+            margin-bottom: 32px;
+            text-align: center;
+            color: var(--color-sub2);
+        }
+
+        @media (max-width: 600px) {
+            .sec-title {
+                font-size: 1.7rem;
+                margin-bottom: 26px;
+            }
+        }
+
+        /* ファーストビュー */
+        .hero {
+            background: #fff;
+        }
+
+        .hero-inner {
+            display: grid;
+            gap: 32px;
+            align-items: center;
+        }
+
+        @media (min-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 3fr 2fr;
+            }
+        }
+
+        .hero-logo {
+            width: min(420px, 100%);
+            margin-bottom: 32px;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            margin-bottom: 18px;
+            color: var(--color-sub2);
+        }
+
+        .hero-lead {
+            font-size: 1.05rem;
+            margin-bottom: 26px;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 26px;
+        }
+
+        .hero-tag {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(88,164,176,0.13);
+            color: var(--color-sub2);
+        }
+
+        .hero-ctas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            .hero-inner {
+                text-align: center;
+            }
+            .hero-tags {
+                justify-content: center;
+            }
+            .hero-ctas {
+                flex-direction: column;
+            }
+        }
+
+        .hero-panel {
+            background: linear-gradient(135deg, rgba(58,110,165,0.08), rgba(88,164,176,0.12));
+            border-radius: 24px;
+            padding: 24px 20px;
+            box-shadow: 0 12px 26px rgba(0,0,0,0.08);
+        }
+
+        .hero-panel-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--color-sub2);
+        }
+
+        .hero-panel-list {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        /* ご利用の流れ */
+        .flow-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        @media (min-width: 900px) {
+            .flow-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .flow-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px 22px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            min-height: 260px;
+        }
+
+        .flow-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--color-main);
+        }
+
+        .step-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .step-list li {
+            margin-bottom: 6px;
+        }
+
+        .step-label {
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        /* お問い合わせ */
+        .contact-text {
+            text-align: center;
+            margin-bottom: 28px;
+            font-size: 1rem;
+        }
+
+        .contact-ctas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        /* フッター */
+        footer {
+            background: var(--color-sub2);
+            color: #fff;
+            padding: 30px 20px 24px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        footer img {
+            width: 200px;
+            margin-bottom: 14px;
+        }
+
+        footer a {
+            color: var(--color-highlight);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin: 0 8px;
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            margin-top: 12px;
+            opacity: 0.85;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =============================
+         ファーストビュー
+    ============================== -->
+    <section class="hero fadein">
+        <div class="container hero-inner">
+
+            <!-- 左：ロゴ・コピー・CTA -->
+            <div>
+                <img src="assets/img/nodica-logo-h.svg" alt="nodica" class="hero-logo">
+
+                <h1 class="hero-title">
+                    農業の現場に、ICTの安心を。
+                </h1>
+
+                <p class="hero-lead">
+                    通信環境やパソコン、スマホ、センサー、クラウドやAIツールまで。<br>
+                    日々の農作業で生まれる「設定がわからない」「トラブルが怖い」「誰に聞けばいいかわからない」という不安を、
+                    津別町発の地域密着サポートでまとめて解消します。
+                </p>
+
+                <div class="hero-tags">
+                    <span class="hero-tag">津別町・周辺町村 農家向けICTサポート</span>
+                    <span class="hero-tag">メーカー横断対応</span>
+                    <span class="hero-tag">農繁期の負担を増やさない設計</span>
+                </div>
+
+                <div class="hero-ctas">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf69K0YaucVwJf4ISeGDgNZavEXxqSLUehv_DcD129O5n95Rg/viewform?usp=header"
+                       class="btn btn-main">
+                        フォームで問い合わせる
+                    </a>
+                    <a href="https://line.me/R/ti/p/@823jaeqf"
+                       class="btn btn-sub-main">
+                        LINE公式アカウントで相談
+                    </a>
+                    <a href="tel:09094325694"
+                       class="btn btn-sub-accent">
+                        電話で相談する
+                    </a>
+                </div>
+            </div>
+
+            <!-- 右：イメージパネル（抽象的） -->
+            <div class="hero-panel">
+                <div class="hero-panel-title">農業ICTまわりの「よくあるお困りごと」</div>
+                <div class="hero-panel-list">
+                    ・Wi-Fiが不安定でデータ送信が途中で止まる<br>
+                    ・気象センサーのデータが突然見られなくなった<br>
+                    ・新しいアプリを入れたが、どこから触ればいいかわからない<br>
+                    ・レポートや書類を作る時間がなく、後回しになっている
+                </div>
+                <div style="margin-top:12px; font-size:0.9rem;">
+                    こうしたバラバラな悩みを「ひとつの窓口」として受け止め、<br>
+                    現場目線で一緒に整理しながら、無理のない形でICTを定着させていきます。
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- =============================
+         nodicaとは
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+            <h2 class="sec-title">nodicaとは</h2>
+
+            <div class="card" style="min-height:auto;">
+                <h3 style="font-size:1.2rem; margin-bottom:10px;">
+                    ミッション：「つながれば、できる。」
+                </h3>
+                <p style="margin-bottom:20px; font-size:0.98rem;">
+                    nodica（ノディカ）は、北海道津別町を拠点とする農家向けICTサポートです。
+                    現場の作業リズムと農家の気持ちを大切にしながら、通信環境・デバイス・アプリ・センサー・AIツールなど
+                    「バラバラに導入されている仕組み」をつなぎ直し、安心して使い続けられる状態づくりを目指します。
+                </p>
+
+                <h3 style="font-size:1.1rem; margin-bottom:8px; color:var(--color-main);">
+                    事業の目的
+                </h3>
+                <p style="margin-bottom:16px; font-size:0.95rem;">
+                    ・ICTまわりの不安やストレスを減らすこと<br>
+                    ・トラブル対応や設定作業にかかる時間を削減し、本来の農作業に集中できるようにすること<br>
+                    ・津別町および周辺地域の農業が、次の世代にも続いていくような環境を整えること
+                </p>
+
+                <h3 style="font-size:1.1rem; margin-bottom:8px; color:var(--color-main);">
+                    対応地域・対象
+                </h3>
+                <p style="font-size:0.95rem;">
+                    対応地域は津別町および周辺町村。<br>
+                    特定のメーカー名には縛られず、農業ICTツール全般を横断してサポートします。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================
+         nodicaが選ばれる理由
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+            <h2 class="sec-title">nodicaが選ばれる理由</h2>
+
+            <div class="card-grid">
+
+                <div class="card">
+                    <h3>地域密着だから動きが早い</h3>
+                    <p>
+                        拠点は津別町。移動時間や季節ごとの忙しさを理解したうえで、
+                        「今困っている」をできるだけ早く解消することを大切にしています。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>農家目線で話が通じる</h3>
+                    <p>
+                        作業時期・作付け・天候リスクなど、農業の背景を踏まえた上でICTを考えます。
+                        「このタイミングなら無理なく導入できる」という現実的な提案を行います。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>ICTが苦手でも丸ごと任せられる</h3>
+                    <p>
+                        パソコンの初歩からアプリのログイン、クラウドの設定まで、
+                        一つひとつの画面を一緒に確認しながら進めていくスタイルです。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>スポット依頼も定額も柔軟に</h3>
+                    <p>
+                        「まずは一度だけ試したい」方にはスポット対応を、
+                        継続的な見守りが欲しい方には半年・年間プランをご用意。
+                        農繁期は負担を増やさないよう相談しながら進めます。
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================
+         提供サービス
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+            <h2 class="sec-title">提供サービス</h2>
+
+            <div class="card-grid">
+
+                <div class="card">
+                    <h3>SupportBox /《農家の“できない”に寄り添うICT支援》</h3>
+                    <p style="font-size:0.95rem;">
+                        ・Wi-Fiや通信機器のトラブル対応<br>
+                        ・PC・タブレットの簡易設定やアカウント整理<br>
+                        ・農業向けアプリ・ソフトの操作説明<br>
+                        ・日々の記録やデータ入力のサポート<br><br>
+                        特定メーカー名には依存せず、現場で使っている機器やアプリに合わせて対応します。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>BridgeLine /《“わからない・つながらない”を解決する架け橋機能 》</h3>
+                    <p style="font-size:0.95rem;">
+                        ・気象センサーや観測システムのトラブル対応<br>
+                        ・データ閲覧画面の見方・活用方法のレクチャー<br>
+                        ・LINEなどへの通知設定のサポート<br><br>
+                        「せっかく設置したのにデータが見られない」「数字の意味がわからない」といった
+                        もったいない状態を解消します。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>TechBase /《現場の「動かない」を「動く」に変える技術サポート》</h3>
+                    <p style="font-size:0.95rem;">
+                        ・PCやタブレットの基本設定・初期セットアップ<br>
+                        ・ルーター設置、Wi-Fi環境の見直し<br>
+                        ・クラウドサービスのアカウント整理・権限確認<br><br>
+                        「どのIDでログインしているか分からない」といった状況を整え、
+                        安定したICTの土台をつくります。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>GrowPort /《地域に眠る力を“活かす・広げる・持続させる”拠点》</h3>
+                    <p style="font-size:0.95rem;">
+                        ・AI活用講習（ChatGPTなど）<br>
+                        ・議事録・報告書・書類作成の効率化支援<br>
+                        ・農場や団体向けのカスタムGPT構築サポート<br><br>
+                        「AIに何を任せると効果的か」を一緒に整理し、
+                        無理なく日々の業務に組み込める形を考えます。
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================
+         料金プラン
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+            <h2 class="sec-title">料金プラン</h2>
+
+            <h3 style="font-size:1.3rem; text-align:center; margin-bottom:16px; color:var(--color-main);">
+                スポット（単発）税込 2,750円 /30分
+            </h3>
+
+            <div class="price-grid" style="margin-bottom:32px;">
+
+                <div class="price-card">
+                    <div class="price-title">A（簡易操作）</div>
+                    <div class="price-value">税込 5,500円〜</div>
+                    <p style="font-size:0.95rem;">
+                        ・短時間で終わる設定や確認<br>
+                        ・アプリのログインや簡単な使い方のレクチャー<br>
+                        ・ちょっとした不安を解消するためのスポット相談に向いています。
+                    </p>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-title">B（中負担）</div>
+                    <div class="price-value">税込 15,000円〜</div>
+                    <p style="font-size:0.95rem;">
+                        ・複数機器にまたがる設定や見直し<br>
+                        ・新しいツール導入時の立ち上げ支援<br>
+                        ・半日程度のまとまった作業が想定されるケースに。
+                    </p>
+                </div>
+
+                <div class="price-card">
+                    <div class="price-title">
+                        C（企業・団体向け）<span class="badge">ご相談ください</span>
+                    </div>
+                    <div class="price-value">要相談</div>
+                    <p style="font-size:0.95rem;">
+                        ・複数農場・団体・プロジェクトを対象とした支援<br>
+                        ・講習会やワークショップを組み合わせた対応<br>
+                        ご要望の内容と規模を伺った上で、お見積りいたします。
+                    </p>
+                </div>
+
+            </div>
+
+            <h3 style="font-size:1.3rem; text-align:center; margin-bottom:16px; color:var(--color-main);">
+                定額（おすすめ）
+            </h3>
+
+            <div class="card-grid" style="margin-bottom:32px;">
+
+                <div class="price-card" style="min-height:240px;">
+                    <div class="price-title">農家向け半年プラン</div>
+                    <div class="price-value">税込 30,250円（6時間分）</div>
+                    <p style="font-size:0.95rem;">
+                        繁忙期・閑散期のバランスを踏まえながら、<br>
+                        年に数回は必ず発生する「設定」「トラブル」「確認」を
+                        あらかじめ見込んでおきたい方向けのプランです。
+                    </p>
+                </div>
+
+                <div class="price-card" style="min-height:240px;">
+                    <div class="price-title">年間プラン</div>
+                    <div class="price-value">税込 55,000円（12時間分）</div>
+                    <p style="font-size:0.95rem;">
+                        定期的に状況を振り返りながら、<br>
+                        機器やアプリの更新・入れ替え・新規導入を計画的に進めたい方向け。
+                    </p>
+                </div>
+
+            </div>
+
+            <h3 style="font-size:1.2rem; margin-bottom:12px; color:var(--color-main); text-align:center;">
+                オプション
+            </h3>
+            <div class="card" style="min-height:auto; max-width:720px; margin:0 auto;">
+                <p style="font-size:0.95rem;">
+                    ・AI活用セミナー（農家グループ・団体向け）<br>
+                    ・カスタムGPT作成サポート<br>
+                    ・PC初期設定・入れ替え支援（別途お見積り）<br>
+                    目的や人数に合わせて内容を調整いたします。お気軽にご相談ください。
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- =============================
+         ご利用の流れ（導入フロー）
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+            <h2 class="sec-title">ご利用の流れ</h2>
+
+            <p style="text-align:center; margin-bottom:28px; font-size:0.95rem;">
+                お問い合わせ方法ごとに、基本の流れは共通です。<br>
+                「まずは状況のヒアリング」から始め、無理のない範囲でプランと日程を一緒に決めていきます。
+            </p>
+
+            <div class="flow-grid">
+
+                <div class="flow-card">
+                    <h3>LINEで相談する場合</h3>
+                    <ul class="step-list">
+                        <li><span class="step-label">STEP1</span> LINE友だち追加 → メッセージで状況を簡単に送信</li>
+                        <li><span class="step-label">STEP2</span> チャットまたは通話で詳細ヒアリング</li>
+                        <li><span class="step-label">STEP3</span> 対応内容とおおよその金額をご提案</li>
+                        <li><span class="step-label">STEP4</span> 訪問日時またはオンライン対応の日程を調整</li>
+                        <li><span class="step-label">STEP5</span> 当日サポート・設定作業の実施</li>
+                        <li><span class="step-label">STEP6</span> 完了報告と今後の活用ポイントを共有</li>
+                    </ul>
+                </div>
+
+                <div class="flow-card">
+                    <h3>フォームで問い合わせる場合</h3>
+                    <ul class="step-list">
+                        <li><span class="step-label">STEP1</span> お問い合わせフォームに内容を入力・送信</li>
+                        <li><span class="step-label">STEP2</span> メールまたは電話で状況の確認とヒアリング</li>
+                        <li><span class="step-label">STEP3</span> 必要な作業・時間・概算費用をご提案</li>
+                        <li><span class="step-label">STEP4</span> 日程を決定し、事前に準備しておくことをお伝え</li>
+                        <li><span class="step-label">STEP5</span> 現地またはオンラインでサポート実施</li>
+                        <li><span class="step-label">STEP6</span> 実施内容を共有し、今後のフォロー方法を確認</li>
+                    </ul>
+                </div>
+
+                <div class="flow-card">
+                    <h3>電話で相談する場合</h3>
+                    <ul class="step-list">
+                        <li><span class="step-label">STEP1</span> お電話で現在の状況・困りごとをお聞きします</li>
+                        <li><span class="step-label">STEP2</span> その場で対応可能か・訪問が必要かを判断</li>
+                        <li><span class="step-label">STEP3</span> 概算費用と作業イメージをご説明</li>
+                        <li><span class="step-label">STEP4</span> 日程・場所・対応方法を一緒に決定</li>
+                        <li><span class="step-label">STEP5</span> 当日サポートを実施し、設定内容をメモとしてお渡し</li>
+                        <li><span class="step-label">STEP6</span> 後日、追加の疑問があればLINE・電話でフォロー</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================
+         対応事例・お客様の声
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+            <h2 class="sec-title">対応事例・お客様の声</h2>
+
+            <div class="card-grid">
+
+                <div class="card">
+                    <h3>Wi-Fiが不安定で作業が止まった</h3>
+                    <p style="font-size:0.95rem;">
+                        ルーター位置や配線、設定を見直し、複数の機器から安定して通信できるように調整。
+                        途中で通信が切れてやり直しになる手間が減り、作業効率が向上しました。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>気象データが見られない</h3>
+                    <p style="font-size:0.95rem;">
+                        センサー本体・通信・閲覧画面を順に確認し、原因を切り分け。
+                        当日中にデータ表示を復旧し、その後同じトラブルが起きたときの確認方法もお伝えしました。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>アプリ操作がわからない</h3>
+                    <p style="font-size:0.95rem;">
+                        実際の作業の流れに合わせて、よく使う画面だけを重点的にレクチャー。
+                        手元のメモと画面キャプチャを残すことで、翌日以降も迷わず操作できるようになりました。
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>文書作成が苦手</h3>
+                    <p style="font-size:0.95rem;">
+                        AIを活用して素案を作成し、必要な部分だけを修正するスタイルに変更。
+                        報告書や申請書の作成時間が約1/3になり、本業の作業に時間を回せるようになりました。
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================
+         FAQ
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+            <h2 class="sec-title">よくある質問（FAQ）</h2>
+
+            <div style="max-width:800px; margin:0 auto;">
+
+                <details open>
+                    <summary>機器メーカーは問いませんか？</summary>
+                    <p>
+                        はい、特定のメーカー名にはこだわらず、農業ICTツール全般を横断してサポートします。<br>
+                        ただし、契約内容や保証に関わる部分は、メーカー・販売店様への確認をお願いする場合があります。
+                    </p>
+                </details>
+
+                <details>
+                    <summary>パソコンが苦手でも依頼できますか？</summary>
+                    <p>
+                        もちろんです。マウス操作や文字入力のレベルから、一緒に画面を見ながら進めていきます。
+                        専門用語はできるだけ使わず、後から見返せるメモも残します。
+                    </p>
+                </details>
+
+                <details>
+                    <summary>農繁期でも対応できますか？</summary>
+                    <p>
+                        農繁期は作業を最優先にしつつ、急ぎのトラブルなどはできる範囲で調整して対応します。<br>
+                        じっくり時間をかけて整えたい内容は、農閑期に計画的に進めることをおすすめしています。
+                    </p>
+                </details>
+
+                <details>
+                    <summary>支払い方法は？</summary>
+                    <p>
+                        現金または銀行振込に対応しています。<br>
+                        定額プランの場合は、事前入金をお願いしております。
+                    </p>
+                </details>
+
+                <details>
+                    <summary>初回相談は有料ですか？</summary>
+                    <p>
+                        初回のご相談（概要ヒアリング）は無料です。<br>
+                        具体的な作業に入る前に、おおよその費用感と対応内容をお伝えします。
+                    </p>
+                </details>
+
+                <details>
+                    <summary>定額プラン途中で内容変更できますか？</summary>
+                    <p>
+                        はい、状況に応じて訪問の回数や内容を調整できます。<br>
+                        大きな変更が必要な場合は、事前にご相談の上で決めさせていただきます。
+                    </p>
+                </details>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =============================
+         お問い合わせ
+    ============================== -->
+    <section class="fadein">
+        <div class="container">
+
+            <h2 class="sec-title">お問い合わせ</h2>
+
+            <p class="contact-text">
+                まずは「こんなことも相談していいのかな？」というレベルからで構いません。<br>
+                農閑期：平日 8:30〜19:00 ／ 農繁期：内容に応じてご相談のうえ調整します。
+            </p>
+
+            <div class="contact-ctas">
+
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSf69K0YaucVwJf4ISeGDgNZavEXxqSLUehv_DcD129O5n95Rg/viewform?usp=header"
+                   class="btn btn-main">
+                    フォームで問い合わせる
+                </a>
+
+                <a href="https://line.me/R/ti/p/@823jaeqf"
+                   class="btn btn-sub-main">
+                    LINE公式アカウントで相談
+                </a>
+
+                <a href="tel:09094325694"
+                   class="btn btn-sub-accent">
+                    電話で相談する
+                </a>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- =============================
+         フッター
+    ============================== -->
+    <footer>
+        <img src="assets/img/nodica-logo-w.svg" alt="nodica">
+
+        <div>
+            <a href="tokushoho.html">特定商取引法に基づく表記</a>
+            <!-- プライバシーポリシー用のページを作成したら href を差し替え -->
+            <a href="privacy.html">プライバシーポリシー</a>
+        </div>
+
+        <p>© 2025 nodica All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
