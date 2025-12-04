@@ -390,6 +390,19 @@
             text-align: center;
             margin-top: 40px;
         }
+        /* フッターのリンクを横に並べて折り返さない */
+            footer .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;        /* ← 余白を調整 */
+            flex-wrap: nowrap;  /* ← 折り返し禁止 */
+            white-space: nowrap; /* ← テキスト折り返し防止 */
+        }
+
+        /* スマホで収まりやすくフォント少し調整 */
+            footer .footer-links a {
+  font-size: 0.88rem;
+}
 
         footer img {
             width: 200px;
@@ -927,10 +940,9 @@
     <footer>
         <img src="assets/img/nodica-logo-w.svg" alt="nodica">
 
-        <div>
-            <a href="tokushoho.html">特定商取引法に基づく表記</a>
-            <!-- プライバシーポリシー用のページを作成したら href を差し替え -->
-            <a href="privacy.html">プライバシーポリシー</a>
+        <div class="footer-links">
+          <a href="tokushoho.html">特定商取引法に基づく表記</a>
+          <a href="privacy.html">プライバシーポリシー</a>
         </div>
 
         <p>© 2025 nodica All Rights Reserved.</p>
@@ -938,6 +950,7 @@
 
 </body>
 </html>
+
 
 
 
